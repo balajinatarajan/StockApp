@@ -5,7 +5,7 @@
 		<meta charset="utf-8"> 
 		<meta http-equiv="X-UA-Compatible" content="IE=edge"> 
 		<meta name="viewport" content="width=device-width,initial-scale=1">
-		
+
 		<!-- Latest compiled and minified CSS -->
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 
@@ -13,48 +13,16 @@
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
 
 		<link href="//fonts.googleapis.com/css?family=Roboto:100,300,400,700,900|Roboto+Condensed:300,400,700" rel="stylesheet">
-		<style type="text/css">
-			body {
-				background-color: #333 !important;
-				color: #FFF !important;
-				font-size: 50px;
-    			font-weight: 100;
-    			margin: 0px;
-    			padding: 50px 0px 30px 0px;
-    			line-height: 60px;
-    			font-family: 'Roboto', sans-serif;
-			}
 
-			.total {
-				font-size: 150px;
-				padding: 125px 0px 0px 0px;
-			}
-
-			.panel {
-				background-color: #333;
-				text-align: center;
-				font-size: 25px;
-			}
-
-			.price {
-				padding: 20px;
-				font-size: 50px;
-			}
-
-			.panel-heading {
-				padding: 0px;
-				font-size: 45px;
-				font-weight: 200;
-			}
-		</style>
+		<link rel="stylesheet" type="text/css" href="css/main.css">
 	</head>
 	<body>
 		<div class="container">
 			<div class="row">
-				<div class="col col-lg-8 total" id="total">
-					...
+				<div class="col col-md-8 total" id="total">
+					$1500.12
 				</div>
-				<div class="col col-lg-4">
+				<div class="col col-md-4 visible-md-block visible-lg-block">
 					<canvas id="canvas" width="300" height="300"></canvas>
 				</div>
 			</div>
@@ -67,127 +35,6 @@
 		<!-- Latest compiled and minified JavaScript -->
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 
-		<script type="text/javascript">
-			var total = [];
-			
-			invoke();
-
-			setInterval( function(){
-				invoke();
-				amt = 0;
-				for(var c=0; c < total.length; c++) {
-					amt = amt + total[c].amt;
-				}
-				$('#total').html('$' + (Math.round(amt * 100) /100 ));
-			}, 60000);
-
-			function invoke() {
-				$('#index').html('');
-				$.ajax({
-	  				url:"shares.json",
-	 				dataType: "json",
-	 				success: function( response1 ) {
-	 					total = response1;
-	        			for(var i=0; i < response1.length; i++) {
-	        				(function(x, y){
-	        					$.ajax({
-				  					url:"http://dev.markitondemand.com/MODApis/Api/v2/Quote/jsonp?symbol=" + x.index,
-				    				jsonp: "callback",
-				    				dataType: "jsonp",
-				    				success: function( response2 ) {
-				        				$('#index').append('<div class="col col-md-3"><div class="panel panel-default"><div class="panel-heading">' + response2.Symbol + '</div><div class="price">$' + response2.LastPrice + '</div>x ' + x.shares + ' = ' + (x.shares * response2.LastPrice) + '</div></div>');
-				        				total[y].amt = (x.shares * response2.LastPrice);
-				    				}
-								});
-							})(response1[i], i);
-	        			}
-	    			},
-	    			error: function( jqXHR, textStatus ) {
-	    				alert( "Request failed: " + textStatus );
-	    			}
-				});
-			}
-		</script>
-
-		<script>
-			var canvas = document.getElementById("canvas");
-			var ctx = canvas.getContext("2d");
-			var radius = canvas.height / 2;
-			ctx.translate(radius, radius);
-			radius = radius * 0.90
-			setInterval(drawClock, 1000);
-
-			function drawClock() {
-			  drawFace(ctx, radius);
-			  drawNumbers(ctx, radius);
-			  drawTime(ctx, radius);
-			}
-
-			function drawFace(ctx, radius) {
-			  var grad;
-			  ctx.beginPath();
-			  ctx.arc(0, 0, radius, 0, 2*Math.PI);
-			  ctx.fillStyle = '#333';
-			  ctx.fill();
-			  grad = ctx.createRadialGradient(0,0,radius*0.95, 0,0,radius*1.05);
-			  grad.addColorStop(0, '#fff');
-			  grad.addColorStop(0.5, 'white');
-			  grad.addColorStop(1, '#fff');
-			  ctx.strokeStyle = grad;
-			  ctx.lineWidth = 0;
-			  ctx.stroke();
-			  ctx.beginPath();
-			  ctx.fillStyle = '#fff';
-			  ctx.fill();
-			}
-
-			function drawNumbers(ctx, radius) {
-			  var ang;
-			  var num;
-			  ctx.font = radius*0.25 + "px arial";
-			  ctx.textBaseline="middle";
-			  ctx.textAlign="center";
-			  for(num = 1; num < 13; num++){
-			    ang = num * Math.PI / 6;
-			    ctx.rotate(ang);
-			    ctx.translate(0, -radius*0.75);
-			    ctx.rotate(-ang);
-			    ctx.fillText(num.toString(), 0, 0);
-			    ctx.rotate(ang);
-			    ctx.translate(0, radius*0.75);
-			    ctx.rotate(-ang);
-			  }
-			}
-
-			function drawTime(ctx, radius){
-			    var now = new Date();
-			    var hour = now.getHours();
-			    var minute = now.getMinutes();
-			    var second = now.getSeconds();
-			    //hour
-			    hour=hour%12;
-			    hour=(hour*Math.PI/6)+
-			    (minute*Math.PI/(6*60))+
-			    (second*Math.PI/(360*60));
-			    drawHand(ctx, hour, radius*0.5, radius*0.04);
-			    //minute
-			    minute=(minute*Math.PI/30)+(second*Math.PI/(30*60));
-			    drawHand(ctx, minute, radius*0.8, radius*0.04);
-			    // second
-			    second=(second*Math.PI/30);
-			    drawHand(ctx, second, radius*0.9, radius*0.02);
-			}
-
-			function drawHand(ctx, pos, length, width) {
-			    ctx.beginPath();
-			    ctx.lineWidth = width;
-			    ctx.lineCap = "round";
-			    ctx.moveTo(0,0);
-			    ctx.rotate(pos);
-			    ctx.lineTo(0, -length);
-			    ctx.stroke();
-			    ctx.rotate(-pos);
-			}
-		</script>
+		<script type="text/javascript" src="js/script.js"></script>
 	</body>
 </html>
