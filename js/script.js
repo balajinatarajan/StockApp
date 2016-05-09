@@ -25,8 +25,10 @@ function invoke() {
 	    				jsonp: "callback",
 	    				dataType: "jsonp",
 	    				success: function( response2 ) {
-	        				$('#index').append('<div class="col col-md-3"><div class="panel panel-default"><div class="panel-heading">' + response2.Symbol + '</div><div class="price">$' + response2.LastPrice + '</div>x ' + x.shares + ' = ' + (x.shares * response2.LastPrice) + '</div></div>');
+	        				$('#index').append('<div class="col col-md-6"><div class="panel panel-default"><div class="panel-heading">' + response2.Symbol + '</div><div class="price">$' + response2.LastPrice + '</div>x ' + x.shares + ' = ' + (Math.round((x.shares * response2.LastPrice) * 100) /100 ) + '<div id="' + response2.Symbol + '_chart"></div></div></div>');
 	        				total[y].amt = (x.shares * response2.LastPrice);
+                            
+                            drawChart(response2.Symbol + '_chart', response2.Symbol, 30, '(30 days)', '#000000');
 	    				}
 					});
 				})(response1[i], i);
@@ -55,7 +57,7 @@ function drawFace(ctx, radius) {
   var grad;
   ctx.beginPath();
   ctx.arc(0, 0, radius, 0, 2*Math.PI);
-  ctx.fillStyle = '#333';
+  ctx.fillStyle = '#000000';
   ctx.fill();
   grad = ctx.createRadialGradient(0,0,radius*0.95, 0,0,radius*1.05);
   grad.addColorStop(0, '#fff');

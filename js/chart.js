@@ -4,7 +4,11 @@ function drawChart(divid, symbol, duration, duration_text, bg) {
             renderTo: divid,
             backgroundColor: bg
         },
-        title: {},
+        title: {
+            style: {
+                color: "#FFFFFF"
+            }
+        },
         subtitle: {
             text: ''
         },
@@ -23,7 +27,8 @@ function drawChart(divid, symbol, duration, duration_text, bg) {
                     return Highcharts.numberFormat(this.value, 0);
                 }
             },
-            showFirstLabel: false
+            showFirstLabel: false,
+            gridLineDashStyle: 'longdash'
         }, {
             linkedTo: 0,
             gridLineWidth: 0,
@@ -50,6 +55,9 @@ function drawChart(divid, symbol, duration, duration_text, bg) {
                 marker: {
                     lineWidth: 1
                 }
+            },
+            line: {
+                color: '#00CC99'
             }
         },
         series: [{
